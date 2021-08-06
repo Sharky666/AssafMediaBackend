@@ -9,6 +9,5 @@ app.get('/', (req: Request, res: Response): void => {
 });
 
 app.listen(2000, ()=> {
-// tslint:disable-next-line: no-console
 console.log(`listening on port: ${port}`);
 });

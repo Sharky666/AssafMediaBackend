@@ -11,7 +11,11 @@
       "paths": {
           "*": [
               "node_modules/*"
-          ]
+          ],
+          "@config/*": ["config/*"],
+          "@interfaces/*": ["src/interfaces/*"],
+          "@services/*": ["src/services/*"],
+          "@DAOs/*": ["src/DAOs/*"]
       }
   },
   "include": [
