@@ -2,7 +2,7 @@ import { ConnectionConfig } from "mysql"
 
 export const connectionConfig: ConnectionConfig = {
     host: 'localhost',
-    user: 'me',
-    password: 'epicPassword',
-    database: 'assafMedia'
+    user: 'root',
+    password: 'batyamBaDam!',
+    database: 'assaf_media'
 }

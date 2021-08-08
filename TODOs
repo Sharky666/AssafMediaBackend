@@ -1,0 +1,6 @@
+change the DAOs to be a static class or only export their methods (it's a problem because it's difficult to declare static methods from an abstract class, do it anyway)
+
+levrage an advanced mechanism to managing the DAOs and the databases (DI for example),
+ thus decoupling the code's structure and allowing for more dynamic and scalable arhitecture
+
+ change epoch_time in userService to a more appropriate data type

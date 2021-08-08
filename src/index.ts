@@ -1,12 +1,12 @@
-import express, { Request, Response } from 'express';
+import  * as initializationService  from '@services/initializationService';
+import express from 'express';
+import { indexRouter } from './controllers/indexController';
 const port = 2000;
-
 const app = express();
 
-app.get('/', (req: Request, res: Response): void => {
-    res.status(200);
-    res.send('hi');
-});
+initializationService.initalizeDatabase();
+
+app.use('/', indexRouter);
 
 app.listen(2000, ()=> {
 console.log(`listening on port: ${port}`);

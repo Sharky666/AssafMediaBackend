@@ -2,7 +2,7 @@ import { MysqlError } from 'mysql';
 import { connectionConfig } from '@config/database';
 import mysql from 'mysql';
 
-class DatabaseService {
+export class DatabaseService {
     private static instance: DatabaseService;
     private _connection = mysql.createConnection(connectionConfig);
 

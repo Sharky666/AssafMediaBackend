@@ -13,10 +13,19 @@
               "node_modules/*"
           ],
           "@config/*": ["config/*"],
-          "@interfaces/*": ["src/interfaces/*"],
           "@services/*": ["src/services/*"],
+          "@controllers/*": ["src/controllers/*"],
+          "@middleware/*": ["src/middleware/*"],
+          "@validators/*": ["src/validators/*"],
+          "@types/*": ["src/types/*"],
           "@DAOs/*": ["src/DAOs/*"]
-      }
+      },
+      "plugins": [
+          {
+            "transform": "@zerollup/ts-transform-paths",
+            "exclude": ["*"]
+          }
+      ],
   },
   "include": [
       "src/**/*"
