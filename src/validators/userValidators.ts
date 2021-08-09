@@ -1,5 +1,5 @@
 import { isUserExistsByEmail } from "@services/databases/userService";
-import { CustomValidator } from "express-validator";
+import { body, CustomValidator } from "express-validator";
 
 const isEmailInUse: CustomValidator = value => {
     return isUserExistsByEmail(value).then(emailInUse => {
@@ -9,4 +9,15 @@ const isEmailInUse: CustomValidator = value => {
     });
 };
 
-export {isEmailInUse};
+const loginUserPropertiesValidator = [
+    body('password').isLength({min: 6, max: 100}).bail(),
+    body('email').isEmail().bail()
+]
+
+const userRegistryValidator = [
+    body('isAdmin').isNumeric().isBoolean().bail(),
+    body('password').isLength({min: 6, max: 100}).bail(),
+    body('email').isEmail().bail().custom(isEmailInUse)
+]
+
+export {userRegistryValidator, loginUserPropertiesValidator};

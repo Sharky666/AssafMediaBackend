@@ -1,22 +1,16 @@
-// import { isEmailInUse } from '@validators/user';
 import { User } from '../types/user';
-import { CustomServerResponse } from '../types/serverResponse';
 import * as UserService from '@services/databases/userService';
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { sign } from 'jsonwebtoken';
 import { jwtPrivateKey } from '@config/jwt';
-import { isEmailInUse } from '@validators/userValidators';
+import { loginUserPropertiesValidator, userRegistryValidator } from '@validators/userValidators';
 
 const userRouter = express.Router();
 
+// register
 userRouter.post(
-    '/', [
-    body('password').isLength({min: 6, max: 100}).bail(),
-    body('isAdmin').isNumeric().isBoolean().bail(),
-    body('email').isEmail().bail()
-    .custom(isEmailInUse)],
-    (req: Request, res: Response) => {
+    '/', userRegistryValidator, (req: Request, res: Response) => {
         const err = validationResult(req);
         if (err.isEmpty()) {
             res.status(201);
@@ -33,11 +27,48 @@ userRouter.post(
                 });
             });
         }
+        res.status(401);
         return res.send({
             value: null,
             errors: err.array()
         });
 
 });
+
+// get JWT token from user properties
+userRouter.get(
+    '/', loginUserPropertiesValidator, (req: Request, res: Response) => {
+        const err = validationResult(req);
+        if (err.isEmpty()) {
+            const user: User = {
+                email: req.body.email,
+                password: req.body.password
+            };
+            return UserService.getUserFromEmailAndPassword(user).then(userProperties => {
+                if (userProperties) {
+                    res.status(200);
+                    user.id = userProperties.id;
+                    user.isAdmin = userProperties.isAdmin;
+                    console.log(user);
+                    return res.send({
+                        value: sign(user, jwtPrivateKey),
+                        errors: null
+                    });
+                }
+                res.status(401);
+                res.send({
+                    vlaue: null,
+                    errors: 'User does not exist'
+                });
+            })
+
+        }
+        res.status(401);
+        return res.send({
+            value: null,
+            errors: err.array()
+        });
+    }
+)
 
 export {userRouter};

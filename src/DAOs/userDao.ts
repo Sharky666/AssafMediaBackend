@@ -17,7 +17,6 @@ export class UserDao implements BaseDao {
         return UserDao.instance;
     }
 
-    // TODO: should return a User
     async getUserByEmail(userEmail: string): Promise<any> {
         return DatabaseService.getInstance().knexInstance(this.tableName)
             .where({email: userEmail})
@@ -41,12 +40,25 @@ export class UserDao implements BaseDao {
             })
     }
 
+    async getUserFromEmailAndPassword(user: User): Promise<User> {
+        return DatabaseService.getInstance().knexInstance(this.tableName)
+            .where({
+                email: user.email,
+                password: user.password
+            })
+            .then(users => {
+                if (!users[0]) return null;
+                return users[0];
+            })
+            .catch(err => {
+                return err;
+            })
+    }
+
     async isUserExistsByEmail(email: string): Promise<boolean> {
         return this.getUserByEmail(email).then(columns => {
-            if (columns[0]) {
-                return true;
-            }
-            return false;
+            if (!columns[0]) return false;
+            return true;
         }).catch(err => {return err});
     }
 

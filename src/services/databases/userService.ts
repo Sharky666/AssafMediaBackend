@@ -13,5 +13,13 @@ export async function create(user: User): Promise<any> {
     }).catch(err => {
         console.log(`user service err: ${err}`);
         return err
-    })
+    });
+}
+
+export async function getUserFromEmailAndPassword(user: User): Promise<any> {
+    return UserDao.getInstance().getUserFromEmailAndPassword(user).then(userProperties => {
+        return userProperties;
+    }).catch(err => {
+        return err;
+    });
 }
