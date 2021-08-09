@@ -3,7 +3,6 @@ import { CustomValidator } from "express-validator";
 
 const isEmailInUse: CustomValidator = value => {
     return isUserExistsByEmail(value).then(emailInUse => {
-        console.log(emailInUse);
         if (emailInUse) {
             return Promise.reject('E-mail already in use');
         };

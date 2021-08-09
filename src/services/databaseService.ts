@@ -1,19 +1,18 @@
 import { MysqlError } from 'mysql';
 import { connectionConfig } from '@config/database';
 import mysql from 'mysql';
+import Knex from 'knex';
 
 export class DatabaseService {
     private static instance: DatabaseService;
-    private _connection = mysql.createConnection(connectionConfig);
+    // private _connection = mysql.createConnection(connectionConfig);
+    private knex = Knex({
+        client: 'mysql',
+        version: '8',
+        connection: connectionConfig
+    });
 
-    private constructor() {
-        this._connection.connect((err: MysqlError)  => {
-            if (err) {
-            console.error('error connecting: ' + err.stack);
-            return;
-            }
-        });
-    }
+    private constructor() {}
 
     public static getInstance(): DatabaseService {
         if (!DatabaseService.instance) {
@@ -23,7 +22,7 @@ export class DatabaseService {
         return DatabaseService.instance;
     }
 
-    public get connection() {
-        return this._connection;
+    public get knexInstance(): Knex {
+        return this.knex;
     }
 }

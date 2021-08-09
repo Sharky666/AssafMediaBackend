@@ -1,16 +1,9 @@
 import { BaseDao } from "@DAOs/baseDao";
-import { Connection } from "mysql";
+import Knex from "knex";
 
 export class UserDiceRollsDao implements BaseDao {
     private static instance: UserDiceRollsDao;
     private tableName: string = 'dice_rolls_table';
-
-    private initializationQuery = `
-    CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        dice_result INT(1) NOT NULL,
-        epoch_time INT(11) NOT NULL)`;
 
     private constructor() {}
 
@@ -22,8 +15,22 @@ export class UserDiceRollsDao implements BaseDao {
         return UserDiceRollsDao.instance;
     }
 
-    async initalize(sqlConnection: Connection): Promise<void> {
-        sqlConnection.query(this.initializationQuery);
-        return;
+    initalize(knex: Knex): void {
+        knex.schema
+            .hasTable(this.tableName).then(tableExists => {
+                if(!tableExists) {
+                    knex.schema.createTable(this.tableName, table => {
+                        table.increments('id');
+                        table.integer('user_id')
+                            .notNullable()
+                            .unsigned()
+                            .references('users.id');
+                        table.integer('dice_result').notNullable();
+                        table.timestamp('epoch_time').notNullable();
+                    })
+                    .catch(err => console.log(err));
+                }
+            })
+            .catch(err => console.log(err));
     }
 }

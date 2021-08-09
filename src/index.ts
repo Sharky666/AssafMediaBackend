@@ -9,5 +9,5 @@ initializationService.initalizeDatabase();
 app.use('/', indexRouter);
 
 app.listen(2000, ()=> {
-console.log(`listening on port: ${port}`);
+    console.log(`listening on port: ${port}`);
 });

@@ -1,17 +1,11 @@
 import { BaseDao } from "@DAOs/baseDao";
 import { User } from "../types/user";
-import { Connection, Query } from "mysql";
 import { DatabaseService } from "@services/databaseService";
+import Knex from "knex";
 
 export class UserDao implements BaseDao {
     private static instance: UserDao;
     private tableName: string = 'users';
-
-    private initializationQuery = `CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(255) NOT NULL,
-        password VARCHAR(100) NOT NULL,
-        epoch_time VARCHAR(255) NOT NULL);`;
 
     private constructor() {}
 
@@ -24,42 +18,52 @@ export class UserDao implements BaseDao {
     }
 
     // TODO: should return a User
-    async getUserByEmail(email: string): Promise<any> {
-        DatabaseService.getInstance().connection.query(
-            `SELECT * FROM ${this.tableName} WHERE email = '${email}';`,
-             ((err, results, fields) => {
-                 if (err) {
-                     return Promise.reject(err);
-                 }
-                return Promise.resolve(results);
-        }));
+    async getUserByEmail(userEmail: string): Promise<any> {
+        return DatabaseService.getInstance().knexInstance(this.tableName)
+            .where({email: userEmail})
+            .then(columns => {
+                return columns;
+            })
+            .catch(err => {console.log(err)});
     }
 
     async create(user: User): Promise<any> {
-        DatabaseService.getInstance().connection.query(
-            `INSERT INTO ${this.tableName} (email, password, epoch_time)
-            VALUES
-            ('${user.email}', '${user.password}', '${Date.now()}');`,
-                (err, results) => {
-                    if(err) {
-                        throw err;
-                    }
-                    console.log(`userDAO ${results.insertId}`);
-                return results.insertId;
-            });
+        return DatabaseService.getInstance().knexInstance(this.tableName)
+            .insert({
+                'email': user.email,
+                'password': user.password,
+                "isAdmin": user.isAdmin
+            }).then(value => {
+                return value[0];
+            }, (err) => {
+                console.log(err);
+                return err;
+            })
     }
 
     async isUserExistsByEmail(email: string): Promise<boolean> {
-        return this.getUserByEmail(email).then(user => {
-            if (user) {
+        return this.getUserByEmail(email).then(columns => {
+            if (columns[0]) {
                 return true;
             }
             return false;
         }).catch(err => {return err});
     }
 
-    async initalize(sqlConnection: Connection): Promise<void> {
-        sqlConnection.query(this.initializationQuery);
-        return;
+    initalize(knex: Knex): void {
+        knex.schema
+            .hasTable(this.tableName)
+                .then(tableExists => {
+                    if(!tableExists) {
+                        knex.schema.createTable(this.tableName, table => {
+                            table.increments('id');
+                            table.string('email').notNullable();
+                            table.string('password').notNullable();
+                            table.boolean('isAdmin').notNullable();
+                        })
+                        .catch(err => console.log(err));
+                    }
+                })
+            .catch(err => console.log(err));
     }
 }

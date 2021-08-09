@@ -1,6 +1,6 @@
-import { ConnectionConfig } from "mysql"
+import { StaticConnectionConfig } from "knex";
 
-export const connectionConfig: ConnectionConfig = {
+export const connectionConfig: StaticConnectionConfig = {
     host: 'localhost',
     user: 'root',
     password: 'batyamBaDam!',

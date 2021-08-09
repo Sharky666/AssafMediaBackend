@@ -1,5 +1,6 @@
+import Knex from "knex";
 import { Connection } from "mysql";
 
 export abstract class BaseDao {
-    abstract initalize(sqlConnection: Connection): Promise<void>;
+    abstract initalize(knex: Knex): void;
 }
