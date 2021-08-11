@@ -1,10 +1,17 @@
 import { User } from '../types/user';
 import * as UserService from '@services/databases/userService';
-import express, { Request, Response } from 'express';
+import express, { CookieOptions, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { sign } from 'jsonwebtoken';
 import { jwtPrivateKey } from '@config/jwt';
 import { loginUserPropertiesValidator, userRegistryValidator } from '@validators/userValidators';
+
+const idTokenCookieOptions: CookieOptions = {
+    path: '/',
+    httpOnly: true,
+    domain: 'localhost',
+    expires: new Date(2022, 11, 17)
+}
 
 const userRouter = express.Router();
 
@@ -21,8 +28,9 @@ userRouter.post(
             };
             return UserService.create(user).then(userId => {
                 user.id = userId;
+                res.cookie('id_token', sign(user, jwtPrivateKey), idTokenCookieOptions);
                 return res.send({
-                    value: sign(user, jwtPrivateKey),
+                    value: 'Welcome aboard!',
                     errors: err.array()
                 });
             });
@@ -50,9 +58,10 @@ userRouter.get(
                     user.id = userProperties.id;
                     user.isAdmin = userProperties.isAdmin;
                     console.log(user);
+                    res.cookie('id_token', sign(user, jwtPrivateKey), idTokenCookieOptions);
                     return res.send({
-                        value: sign(user, jwtPrivateKey),
-                        errors: null
+                        value: 'Responded with HttpOnly cookie',
+                        errors: err.array()
                     });
                 }
                 res.status(401);
