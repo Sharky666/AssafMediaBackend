@@ -1,10 +1,10 @@
 import { BaseDao } from '@DAOs/baseDao';
 import { UserDao } from '@DAOs/userDao';
-import { UserDiceRollsDao } from '@DAOs/UserDiceRollsDao';
+import { UserDiceRollDao } from '@DAOs/UserDiceRollDao';
 import { DatabaseService } from './databaseService';
 
 export function initalizeDatabase() {
-    const daos: BaseDao[] = [UserDao.getInstance(), UserDiceRollsDao.getInstance()];
+    const daos: BaseDao[] = [UserDao.getInstance(), UserDiceRollDao.getInstance()];
     initializeTables(daos);
 }
 

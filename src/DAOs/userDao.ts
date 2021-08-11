@@ -26,6 +26,7 @@ export class UserDao implements BaseDao {
             .catch(err => {console.log(err)});
     }
 
+    // TOOD: make it return a number (TS type)
     async create(user: User): Promise<any> {
         return DatabaseService.getInstance().knexInstance(this.tableName)
             .insert({

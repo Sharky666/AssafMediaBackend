@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import { gameRouter } from './gameController';
 import { userRouter } from './userController';
 
 const indexRouter = express.Router();
@@ -12,5 +13,6 @@ indexRouter.use([
 ]);
 
 indexRouter.use('/user', userRouter);
+indexRouter.use('/game', gameRouter);
 
 export {indexRouter};

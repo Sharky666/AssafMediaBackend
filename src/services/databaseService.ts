@@ -1,11 +1,8 @@
-import { MysqlError } from 'mysql';
 import { connectionConfig } from '@config/database';
-import mysql from 'mysql';
 import Knex from 'knex';
 
 export class DatabaseService {
     private static instance: DatabaseService;
-    // private _connection = mysql.createConnection(connectionConfig);
     private knex = Knex({
         client: 'mysql',
         version: '8',
