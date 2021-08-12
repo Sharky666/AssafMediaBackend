@@ -7,9 +7,7 @@ import { jwtPrivateKey } from '@config/jwt';
 import { loginUserPropertiesValidator, userRegistryValidator } from '@validators/userValidators';
 
 const idTokenCookieOptions: CookieOptions = {
-    path: '/',
     httpOnly: true,
-    domain: 'localhost',
     expires: new Date(2022, 11, 17)
 }
 
@@ -17,7 +15,7 @@ const userRouter = express.Router();
 
 // register
 userRouter.post(
-    '/', userRegistryValidator, (req: Request, res: Response) => {
+    '/register', userRegistryValidator, (req: Request, res: Response) => {
         const err = validationResult(req);
         if (err.isEmpty()) {
             res.status(201);
@@ -44,9 +42,10 @@ userRouter.post(
 });
 
 // get JWT token from user properties
-userRouter.get(
-    '/', loginUserPropertiesValidator, (req: Request, res: Response) => {
+userRouter.post(
+    '/login', loginUserPropertiesValidator, (req: Request, res: Response) => {
         const err = validationResult(req);
+        console.log(req.body);
         if (err.isEmpty()) {
             const user: User = {
                 email: req.body.email,
