@@ -39,6 +39,7 @@ export class UserDiceRollDao implements BaseDao {
             })
             .orderBy('epoch_time', 'desc')
             .then(orderedUserRolls => {
+                console.log(orderedUserRolls);
                 return orderedUserRolls[0];
             });
     }
@@ -54,7 +55,7 @@ export class UserDiceRollDao implements BaseDao {
                             .unsigned()
                             .references('users.id');
                         table.integer('dice_result').notNullable();
-                        table.string('epoch_time').notNullable();
+                        table.bigInteger('epoch_time').notNullable();
                     })
                     .catch(err => console.log(err));
                 }
